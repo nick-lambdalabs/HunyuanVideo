@@ -7,8 +7,6 @@ import gradio as gr
 from loguru import logger
 
 from hyvideo.config import parse_args
-from hyvideo.inference import HunyuanVideoSampler
-from hyvideo.utils.file_utils import save_videos_grid
 
 VIDEO_FPS = 24
 MAX_VIDEO_SEC = 20
@@ -36,6 +34,8 @@ hunyuan_video_sampler = None
 
 
 def maybe_load_model(progress: gr.Progress):
+    from hyvideo.inference import HunyuanVideoSampler  # lazy import for faster startup
+
     global hunyuan_video_sampler
     global args
 
@@ -63,6 +63,10 @@ def generate_video(
     flow_shift,
     progress=gr.Progress(),
 ) -> str:
+    from hyvideo.utils.file_utils import (
+        save_videos_grid,  # lazy import for faster startup
+    )
+
     print(f"Prompt: {prompt}")
     print(f"Video Length: {video_length}")
     print(f"Size: {size}")
@@ -146,7 +150,7 @@ with gr.Blocks() as demo:
                 "336x192",
                 "320x180",
             ],
-            value="640x360",
+            value="336x192",
         )
         video_length_input = gr.Slider(  # video length values have to be 4n+1
             minimum=1,
