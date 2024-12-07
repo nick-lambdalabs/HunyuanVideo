@@ -35,7 +35,7 @@ if not os.path.exists(args.save_path):
 hunyuan_video_sampler = None
 
 
-def maybe_load_model(progress: gradio.Progress):
+def maybe_load_model(progress: gr.Progress):
     global hunyuan_video_sampler
     global args
 
@@ -61,7 +61,7 @@ def generate_video(
     cfg_scale,
     embedded_cfg_scale,
     flow_shift,
-    progress=gradio.Progress(),
+    progress=gr.Progress(),
 ) -> str:
     print(f"Prompt: {prompt}")
     print(f"Video Length: {video_length}")
