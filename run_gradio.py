@@ -3,9 +3,9 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import gradio as gr
 from loguru import logger
 
-import gradio as gr
 from hyvideo.config import parse_args
 from hyvideo.inference import HunyuanVideoSampler
 from hyvideo.utils.file_utils import save_videos_grid
