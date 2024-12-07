@@ -126,7 +126,7 @@ with gr.Blocks() as demo:
         submit_btn = gr.Button("Generate Video")
 
     with gr.Row():
-        seed_input = gr.Number(label="Seed", default=0xC0FFEE)
+        seed_input = gr.Number(label="Seed", value=0xC0FFEE)
     output_video = gr.Video(label="Generated Video")
 
     submit_btn.click(
