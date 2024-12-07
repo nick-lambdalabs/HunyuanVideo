@@ -51,8 +51,18 @@ def maybe_load_model():
 
 
 def generate_video(
-    prompt, neg_prompt, video_length, size, infer_steps, seed, cfg_scale
+    prompt,
+    neg_prompt,
+    video_length,
+    size,
+    infer_steps,
+    seed,
+    cfg_scale,
+    embedded_cfg_scale,
+    flow_shift,
 ) -> str:
+    assert hunyuan_video_sampler is not None
+
     print(f"Prompt: {prompt}")
     print(f"Video Length: {video_length}")
     print(f"Size: {size}")
@@ -70,10 +80,10 @@ def generate_video(
         negative_prompt=neg_prompt,
         infer_steps=infer_steps,
         guidance_scale=cfg_scale,
-        num_videos_per_prompt=1,  # todo: configurable
-        flow_shift=args.flow_shift,
-        batch_size=1,  # todo: configurable
-        embedded_guidance_scale=args.embedded_cfg_scale,
+        num_videos_per_prompt=1,
+        flow_shift=flow_shift,
+        batch_size=1,
+        embedded_guidance_scale=embedded_cfg_scale,
     )
     samples = outputs["samples"]
 
@@ -87,6 +97,7 @@ def generate_video(
 
         # TODO: handle multiple results
         return result_path
+    return ""
 
 
 with gr.Blocks() as demo:
@@ -120,7 +131,14 @@ with gr.Blocks() as demo:
         )
     with gr.Row():
         size_input = gr.Dropdown(
-            label="Size", choices=["1280x720", "640x360", "320x180"], value="640x360"
+            label="Size",
+            choices=[
+                "1280x720",
+                "640x360",
+                "336x192",
+                "320x180",
+            ],
+            value="640x360",
         )
         video_length_input = gr.Slider(  # video length values have to be 4n+1
             minimum=1,
@@ -132,15 +150,21 @@ with gr.Blocks() as demo:
         infer_steps_input = gr.Slider(
             label="Diffusion Steps",
             minimum=1,
-            maximum=100,
+            maximum=200,
             step=1,
             value=25,
         )
+        seed_input = gr.Number(label="Seed", value=0xC0FFEE)
     with gr.Row():
         cfg_scale_input = gr.Slider(
-            label="Guidance Scale", minimum=0.0, maximum=2.0, value=1.0
+            label="Guidance Scale", minimum=0.0, maximum=20.0, value=1.0
         )
-        seed_input = gr.Number(label="Seed", value=0xC0FFEE)
+        embed_cfg_scale_input = gr.Slider(
+            label="Embedded Guidance Scale", minimum=0.0, maximum=20.0, value=6.0
+        )
+        flow_shift_input = gr.Slider(
+            label="Flow Shift", minimum=0.0, maximum=10.0, value=5.0
+        )
         submit_btn = gr.Button("Generate Video")
     output_video = gr.Video(label="Generated Video")
 
@@ -154,6 +178,7 @@ with gr.Blocks() as demo:
             infer_steps_input,
             seed_input,
             cfg_scale_input,
+            flow_shift_input,
         ],
         outputs=output_video,
     )
