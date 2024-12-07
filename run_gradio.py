@@ -100,7 +100,9 @@ with gr.Blocks() as demo:
                 Generation time is a function of video size, video length, and diffusion steps. These are
                 multiplicative - i.e., `generation_time = O(video_size * video_length * diffusion_steps)`. 
                 I recommend that you start with small values (e.g., 320x180, 29 frames, 25 steps) while you
-                refine your prompt, then increase the values to generate a final high quality video.
+                refine your prompt, then increase the values to generate a final high quality video. Generating
+                a 10 second 1280x720 video with 50 diffusion steps takes like 30 min. Generating a 1 second
+                320x180 video with 25 diffusion steps takes like 30 sec.
                 """)
     with gr.Row():
         prompt_input = gr.Textbox(
