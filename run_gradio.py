@@ -71,7 +71,9 @@ def generate_video(
     maybe_load_model(progress)
     assert hunyuan_video_sampler is not None
 
-    def progress_callback(pipeline, step_i, step_t, **kwargs):
+    def progress_callback(
+        pipeline, step_i, step_t, callback_kwargs_that_arent_really_kwargs
+    ):
         progress((step_i, infer_steps), "Generating video...")
         return {}  # inference pipeline expects a dict return
 
