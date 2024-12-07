@@ -110,9 +110,8 @@ def generate_video(
         result_path = f"{save_path}/{time_flag}_seed{outputs['seeds'][i]}_{outputs['prompts'][i][:100].replace('/','').replace(' ', '_')}.mp4"
         save_videos_grid(sample, result_path, fps=VIDEO_FPS)
         logger.info(f"Sample saved to: {result_path}")
-
         # TODO: handle multiple results
-        return [result_path, gr.Video.update(width=width, height=height)]
+        return result_path
     return ""
 
 
@@ -183,7 +182,11 @@ with gr.Blocks() as demo:
         )
         submit_btn = gr.Button("Generate Video")
 
-    output_video = gr.Video(label="Generated Video", width=1280, height=720)
+    output_video = gr.Video(
+        label="Generated Video",
+        width=640,
+        height=360,
+    )
 
     submit_btn.click(
         generate_video,
