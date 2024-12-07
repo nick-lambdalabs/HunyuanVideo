@@ -82,6 +82,10 @@ def generate_video(
         return {}  # inference pipeline expects a dict return
 
     width, height = map(int, size.split("x"))
+    global output_video
+    output_video.width = width
+    output_video.height = height
+
     outputs = hunyuan_video_sampler.predict(
         prompt=prompt,
         height=height,
@@ -178,7 +182,8 @@ with gr.Blocks() as demo:
             label="Flow Shift", minimum=0.0, maximum=10.0, value=5.0
         )
         submit_btn = gr.Button("Generate Video")
-    output_video = gr.Video(label="Generated Video")
+
+    output_video = gr.Video(label="Generated Video", width=1280, height=720, live=True)
 
     submit_btn.click(
         generate_video,
