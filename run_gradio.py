@@ -97,8 +97,8 @@ with gr.Blocks() as demo:
 
                 The first time you click "Generate" it will take an extra long time as the model loads.
 
-                Generation time is a function of video size, video length, and inference steps. These are
-                multiplicative - i.e., `generation_time = O(video_size * video_length * inference_steps)`. 
+                Generation time is a function of video size, video length, and diffusion steps. These are
+                multiplicative - i.e., `generation_time = O(video_size * video_length * diffusion_steps)`. 
                 I recommend that you start with small values (e.g., 320x180, 29 frames, 25 steps) while you
                 refine your prompt, then increase the values to generate a final high quality video.
                 """)
@@ -128,7 +128,11 @@ with gr.Blocks() as demo:
             value=DEFAULT_VIDEO_SEC * VIDEO_FPS + 1,
         )
         infer_steps_input = gr.Slider(
-            label="Inference Steps", minimum=1, maximum=100, value=25
+            label="Diffusion Steps",
+            minimum=1,
+            maximum=100,
+            step=1,
+            value=25,
         )
     with gr.Row():
         cfg_scale_input = gr.Slider(
