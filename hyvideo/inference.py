@@ -1,18 +1,18 @@
-import time
 import random
-
+import time
 from pathlib import Path
-from loguru import logger
 
 import torch
-from hyvideo.constants import PROMPT_TEMPLATE, NEGATIVE_PROMPT, PRECISION_TO_TYPE
-from hyvideo.vae import load_vae
+from loguru import logger
+
+from hyvideo.constants import NEGATIVE_PROMPT, PRECISION_TO_TYPE, PROMPT_TEMPLATE
+from hyvideo.diffusion.pipelines import HunyuanVideoPipeline
+from hyvideo.diffusion.schedulers import FlowMatchDiscreteScheduler
 from hyvideo.modules import load_model
+from hyvideo.modules.posemb_layers import get_nd_rotary_pos_embed
 from hyvideo.text_encoder import TextEncoder
 from hyvideo.utils.data_utils import align_to
-from hyvideo.modules.posemb_layers import get_nd_rotary_pos_embed
-from hyvideo.diffusion.schedulers import FlowMatchDiscreteScheduler
-from hyvideo.diffusion.pipelines import HunyuanVideoPipeline
+from hyvideo.vae import load_vae
 
 
 class Inference(object):
@@ -386,6 +386,7 @@ class HunyuanVideoSampler(Inference):
         embedded_guidance_scale=None,
         batch_size=1,
         num_videos_per_prompt=1,
+        callback_on_step_end=None,
         **kwargs,
     ):
         """
@@ -486,7 +487,7 @@ class HunyuanVideoSampler(Inference):
         scheduler = FlowMatchDiscreteScheduler(
             shift=flow_shift,
             reverse=self.args.flow_reverse,
-            solver=self.args.flow_solver
+            solver=self.args.flow_solver,
         )
         self.pipeline.scheduler = scheduler
 
@@ -538,6 +539,7 @@ class HunyuanVideoSampler(Inference):
             is_progress_bar=True,
             vae_ver=self.args.vae,
             enable_tiling=self.args.vae_tiling,
+            callback_on_step_end=callback_on_step_end,
         )[0]
         out_dict["samples"] = samples
         out_dict["prompts"] = prompt
