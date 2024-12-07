@@ -32,7 +32,8 @@ hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(models_root_path, ar
 args = hunyuan_video_sampler.args
 
 
-def generate_video(prompt, video_length, width, height, infer_steps) -> str:
+def generate_video(prompt, video_length, size, infer_steps) -> str:
+    width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
         prompt=prompt,
         height=height,
@@ -68,32 +69,21 @@ with gr.Blocks() as demo:
             label="Enter your prompt", placeholder="Type something..."
         )
         video_length_input = gr.Number(label="Video Length", value=args.video_length)
-        width_input = gr.Number(label="Width", value=args.video_size[1])
         size_input = gr.Dropdown(
             label="Size", choices=["1280x720", "640x360"], value="1280x720"
         )
-        height_input = gr.Number(label="Height", value=args.video_size[0])
-        infer_steps_input = gr.Number(label="Inference Steps", value=args.infer_steps)
+        infer_steps_input = gr.Slider(
+            label="Inference Steps", minimum=1, maximum=100, value=args.infer_steps
+        )
         submit_btn = gr.Button("Generate Video")
     output_video = gr.Video(label="Generated Video")
-
-    def update_size(size):
-        width, height = map(int, size.split("x"))
-        return width, height
-
-    size_input.change(
-        update_size,
-        inputs=[size_input],
-        outputs=[width_input, height_input],
-    )
 
     submit_btn.click(
         generate_video,
         inputs=[
             prompt_input,
             video_length_input,
-            width_input,
-            height_input,
+            size_input,
             infer_steps_input,
         ],
         outputs=output_video,
