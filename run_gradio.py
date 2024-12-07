@@ -183,7 +183,7 @@ with gr.Blocks() as demo:
         )
         submit_btn = gr.Button("Generate Video")
 
-    output_video = gr.Video(label="Generated Video", width=1280, height=720, live=True)
+    output_video = gr.Video(label="Generated Video", width=1280, height=720)
 
     submit_btn.click(
         generate_video,
