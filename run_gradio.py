@@ -184,6 +184,7 @@ with gr.Blocks() as demo:
             infer_steps_input,
             seed_input,
             cfg_scale_input,
+            embed_cfg_scale_input,
             flow_shift_input,
         ],
         outputs=output_video,
