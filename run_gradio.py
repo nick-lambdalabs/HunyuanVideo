@@ -123,8 +123,8 @@ with gr.Blocks() as demo:
         cfg_scale_input = gr.Slider(
             label="Guidance Scale", minimum=0.0, maximum=2.0, value=1.0
         )
-        submit_btn = gr.Button("Generate Video")
         seed_input = gr.Number(label="Seed", value=0xC0FFEE)
+        submit_btn = gr.Button("Generate Video")
     output_video = gr.Video(label="Generated Video")
 
     submit_btn.click(
