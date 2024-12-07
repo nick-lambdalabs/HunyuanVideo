@@ -90,7 +90,18 @@ def generate_video(
 
 
 with gr.Blocks() as demo:
-    gr.Markdown("# Text-to-Video Generator")
+    gr.Markdown("""
+                # HunyuanVideo Text-to-Video Demo
+                
+                Video lengths are in frames. Videos are 24 FPS.
+
+                The first time you click "Generate" it will take an extra long time as the model loads.
+
+                Generation time is a function of video size, video length, and inference steps. These are
+                multiplicative - i.e., `generation_time = O(video_size * video_length * inference_steps)`. 
+                I recommend that you start with small values (e.g., 320x180, 29 frames, 25 steps) while you
+                refine your prompt, then increase the values to generate a final high quality video.
+                """)
     with gr.Row():
         prompt_input = gr.Textbox(
             label="Prompt",
