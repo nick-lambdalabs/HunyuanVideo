@@ -63,14 +63,13 @@ def generate_video(
     flow_shift,
     progress=gradio.Progress(),
 ) -> str:
-    assert hunyuan_video_sampler is not None
-
     print(f"Prompt: {prompt}")
     print(f"Video Length: {video_length}")
     print(f"Size: {size}")
     print(f"Inference Steps: {infer_steps}")
 
     maybe_load_model(progress)
+    assert hunyuan_video_sampler is not None
 
     width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
