@@ -32,11 +32,22 @@ save_path = (
 if not os.path.exists(args.save_path):
     os.makedirs(save_path, exist_ok=True)
 
-# Load models
-hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(models_root_path, args=args)
+hunyuan_video_sampler = None
 
-# Get the updated args
-args = hunyuan_video_sampler.args
+
+def maybe_load_model():
+    global hunyuan_video_sampler
+    global args
+
+    if hunyuan_video_sampler is not None:
+        return
+
+    hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(
+        models_root_path, args=args
+    )
+
+    # Get the updated args
+    args = hunyuan_video_sampler.args
 
 
 def generate_video(prompt, video_length, size, infer_steps) -> str:
@@ -44,6 +55,8 @@ def generate_video(prompt, video_length, size, infer_steps) -> str:
     print(f"Video Length: {video_length}")
     print(f"Size: {size}")
     print(f"Inference Steps: {infer_steps}")
+
+    maybe_load_model()
 
     width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
