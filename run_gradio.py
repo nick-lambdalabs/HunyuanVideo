@@ -50,7 +50,9 @@ def maybe_load_model():
     args = hunyuan_video_sampler.args
 
 
-def generate_video(prompt, video_length, size, infer_steps) -> str:
+def generate_video(
+    prompt, neg_prompt, video_length, size, infer_steps, seed, cfg_scale
+) -> str:
     print(f"Prompt: {prompt}")
     print(f"Video Length: {video_length}")
     print(f"Size: {size}")
@@ -64,10 +66,10 @@ def generate_video(prompt, video_length, size, infer_steps) -> str:
         height=height,
         width=width,
         video_length=video_length,
-        seed=args.seed,
-        negative_prompt=args.neg_prompt,
+        seed=seed,
+        negative_prompt=neg_prompt,
         infer_steps=infer_steps,
-        guidance_scale=args.cfg_scale,
+        guidance_scale=cfg_scale,
         num_videos_per_prompt=1,  # todo: configurable
         flow_shift=args.flow_shift,
         batch_size=1,  # todo: configurable
@@ -91,10 +93,18 @@ with gr.Blocks() as demo:
     gr.Markdown("# Text-to-Video Generator")
     with gr.Row():
         prompt_input = gr.Textbox(
-            label="Enter your prompt",
+            label="Prompt",
             placeholder="Type something...",
-            lines=10,
+            lines=5,
             max_lines=10,
+        )
+    with gr.Row():
+        neg_prompt_input = gr.Textbox(
+            label="Negative prompt",
+            placeholder="Type something...",
+            lines=3,
+            max_lines=3,
+            value="Aerial view, aerial view, overexposed, low quality, deformation, a poor composition, bad hands, bad teeth, bad eyes, bad limbs, distortion",
         )
     with gr.Row():
         video_length_input = gr.Slider(  # video length values have to be 4n+1
@@ -110,16 +120,25 @@ with gr.Blocks() as demo:
         infer_steps_input = gr.Slider(
             label="Inference Steps", minimum=1, maximum=100, value=25
         )
+        cfg_scale_input = gr.Slider(
+            label="Guidance Scale", minimum=0.0, maximum=2.0, value=1.0
+        )
         submit_btn = gr.Button("Generate Video")
+
+    with gr.Row():
+        seed_input = gr.Number(label="Seed", default=0xC0FFEE)
     output_video = gr.Video(label="Generated Video")
 
     submit_btn.click(
         generate_video,
         inputs=[
             prompt_input,
+            neg_prompt_input,
             video_length_input,
             size_input,
             infer_steps_input,
+            seed_input,
+            cfg_scale_input,
         ],
         outputs=output_video,
     )
