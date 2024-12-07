@@ -35,13 +35,14 @@ if not os.path.exists(args.save_path):
 hunyuan_video_sampler = None
 
 
-def maybe_load_model():
+def maybe_load_model(progress: gradio.Progress):
     global hunyuan_video_sampler
     global args
 
     if hunyuan_video_sampler is not None:
         return
 
+    progress(0, "Loading model...")
     hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(
         models_root_path, args=args
     )
@@ -60,6 +61,7 @@ def generate_video(
     cfg_scale,
     embedded_cfg_scale,
     flow_shift,
+    progress=gradio.Progress(),
 ) -> str:
     assert hunyuan_video_sampler is not None
 
@@ -68,7 +70,7 @@ def generate_video(
     print(f"Size: {size}")
     print(f"Inference Steps: {infer_steps}")
 
-    maybe_load_model()
+    maybe_load_model(progress)
 
     width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
@@ -84,6 +86,9 @@ def generate_video(
         flow_shift=flow_shift,
         batch_size=1,
         embedded_guidance_scale=embedded_cfg_scale,
+        callback_on_step_end=lambda step: progress(
+            (step, infer_steps), "Generating video..."
+        ),
     )
     samples = outputs["samples"]
 
@@ -184,4 +189,4 @@ with gr.Blocks() as demo:
     )
 
 if __name__ == "__main__":
-    demo.launch(share=True)
+    demo.queue().launch(share=True)
