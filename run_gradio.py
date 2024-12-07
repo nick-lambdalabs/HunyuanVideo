@@ -53,9 +53,12 @@ def generate_video(prompt, video_length, width, height, infer_steps) -> str:
     for i, sample in enumerate(samples):
         sample = samples[i].unsqueeze(0)
         time_flag = datetime.fromtimestamp(time.time()).strftime("%Y%m%d-%H%M%S")
-        save_path = f"{save_path}/{time_flag}_seed{outputs['seeds'][i]}_{outputs['prompts'][i][:100].replace('/','').replace(' ', '_')}.mp4"
-        save_videos_grid(sample, save_path, fps=24)
-        logger.info(f"Sample saved to: {save_path}")
+        result_path = f"{save_path}/{time_flag}_seed{outputs['seeds'][i]}_{outputs['prompts'][i][:100].replace('/','').replace(' ', '_')}.mp4"
+        save_videos_grid(sample, result_path, fps=24)
+        logger.info(f"Sample saved to: {result_path}")
+
+        # TODO: handle multiple results
+        return result_path
 
 
 with gr.Blocks() as demo:
@@ -66,10 +69,23 @@ with gr.Blocks() as demo:
         )
         video_length_input = gr.Number(label="Video Length", value=args.video_length)
         width_input = gr.Number(label="Width", value=args.video_size[1])
+        size_input = gr.Dropdown(
+            label="Size", choices=["1280x720", "640x360"], value="1280x720"
+        )
         height_input = gr.Number(label="Height", value=args.video_size[0])
         infer_steps_input = gr.Number(label="Inference Steps", value=args.infer_steps)
         submit_btn = gr.Button("Generate Video")
     output_video = gr.Video(label="Generated Video")
+
+    def update_size(size):
+        width, height = map(int, size.split("x"))
+        return width, height
+
+    size_input.change(
+        update_size,
+        inputs=[size_input],
+        outputs=[width_input, height_input],
+    )
 
     submit_btn.click(
         generate_video,
