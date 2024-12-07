@@ -91,8 +91,12 @@ with gr.Blocks() as demo:
     gr.Markdown("# Text-to-Video Generator")
     with gr.Row():
         prompt_input = gr.Textbox(
-            label="Enter your prompt", placeholder="Type something..."
+            label="Enter your prompt",
+            placeholder="Type something...",
+            lines=10,
+            max_lines=10,
         )
+    with gr.Row():
         video_length_input = gr.Slider(  # video length values have to be 4n+1
             minimum=1,
             maximum=MAX_VIDEO_SEC * VIDEO_FPS + 1,
