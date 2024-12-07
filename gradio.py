@@ -70,4 +70,4 @@ with gr.Blocks() as demo:
     submit_btn.click(generate_video, inputs=prompt_input, outputs=output_video)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=True, server_port=1337)
