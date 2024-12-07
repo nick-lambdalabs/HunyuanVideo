@@ -112,7 +112,7 @@ def generate_video(
         logger.info(f"Sample saved to: {result_path}")
 
         # TODO: handle multiple results
-        return result_path
+        return [result_path, gr.Video.update(width=width, height=height)]
     return ""
 
 
