@@ -71,6 +71,10 @@ def generate_video(
     maybe_load_model(progress)
     assert hunyuan_video_sampler is not None
 
+    def progress_callback(step):
+        progress((step, infer_steps), "Generating video...")
+        return {}  # inference pipeline expects a dict return
+
     width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
         prompt=prompt,
@@ -85,9 +89,7 @@ def generate_video(
         flow_shift=flow_shift,
         batch_size=1,
         embedded_guidance_scale=embedded_cfg_scale,
-        callback_on_step_end=lambda step: progress(
-            (step, infer_steps), "Generating video..."
-        ),
+        callback_on_step_end=progress_callback,
     )
     samples = outputs["samples"]
 
