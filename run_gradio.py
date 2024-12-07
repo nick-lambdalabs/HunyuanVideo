@@ -114,7 +114,7 @@ with gr.Blocks() as demo:
             placeholder="Type something...",
             lines=3,
             max_lines=10,
-            value="Aerial view, aerial view, overexposed, low quality, deformation, a poor composition, bad hands, bad teeth, bad eyes, bad limbs, distortion",
+            value="aerial view, overexposed, low quality, deformation, a poor composition, bad hands, bad teeth, bad eyes, bad limbs, distortion",
         )
     with gr.Row():
         size_input = gr.Dropdown(
