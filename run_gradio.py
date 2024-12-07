@@ -32,15 +32,15 @@ hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(models_root_path, ar
 args = hunyuan_video_sampler.args
 
 
-def generate_video(prompt) -> str:
+def generate_video(prompt, video_length, width, height, infer_steps) -> str:
     outputs = hunyuan_video_sampler.predict(
-        prompt=args.prompt,
-        height=args.video_size[0],
-        width=args.video_size[1],
-        video_length=args.video_length,
+        prompt=prompt,
+        height=height,
+        width=width,
+        video_length=video_length,
         seed=args.seed,
         negative_prompt=args.neg_prompt,
-        infer_steps=args.infer_steps,
+        infer_steps=infer_steps,
         guidance_scale=args.cfg_scale,
         num_videos_per_prompt=1,  # todo: configurable
         flow_shift=args.flow_shift,
@@ -64,10 +64,24 @@ with gr.Blocks() as demo:
         prompt_input = gr.Textbox(
             label="Enter your prompt", placeholder="Type something..."
         )
+        video_length_input = gr.Number(label="Video Length", value=args.video_length)
+        width_input = gr.Number(label="Width", value=args.video_size[1])
+        height_input = gr.Number(label="Height", value=args.video_size[0])
+        infer_steps_input = gr.Number(label="Inference Steps", value=args.infer_steps)
         submit_btn = gr.Button("Generate Video")
     output_video = gr.Video(label="Generated Video")
 
-    submit_btn.click(generate_video, inputs=prompt_input, outputs=output_video)
+    submit_btn.click(
+        generate_video,
+        inputs=[
+            prompt_input,
+            video_length_input,
+            width_input,
+            height_input,
+            infer_steps_input,
+        ],
+        outputs=output_video,
+    )
 
 if __name__ == "__main__":
     demo.launch(share=True, server_port=1337)
