@@ -95,18 +95,20 @@ with gr.Blocks() as demo:
         prompt_input = gr.Textbox(
             label="Prompt",
             placeholder="Type something...",
-            lines=5,
+            lines=3,
             max_lines=10,
         )
-    with gr.Row():
         neg_prompt_input = gr.Textbox(
             label="Negative prompt",
             placeholder="Type something...",
             lines=3,
-            max_lines=3,
+            max_lines=10,
             value="Aerial view, aerial view, overexposed, low quality, deformation, a poor composition, bad hands, bad teeth, bad eyes, bad limbs, distortion",
         )
     with gr.Row():
+        size_input = gr.Dropdown(
+            label="Size", choices=["1280x720", "640x360", "320x180"], value="640x360"
+        )
         video_length_input = gr.Slider(  # video length values have to be 4n+1
             minimum=1,
             maximum=MAX_VIDEO_SEC * VIDEO_FPS + 1,
@@ -114,18 +116,14 @@ with gr.Blocks() as demo:
             label="Video Length",
             value=DEFAULT_VIDEO_SEC * VIDEO_FPS + 1,
         )
-        size_input = gr.Dropdown(
-            label="Size", choices=["1280x720", "640x360", "320x180"], value="640x360"
-        )
         infer_steps_input = gr.Slider(
             label="Inference Steps", minimum=1, maximum=100, value=25
         )
+    with gr.Row():
         cfg_scale_input = gr.Slider(
             label="Guidance Scale", minimum=0.0, maximum=2.0, value=1.0
         )
         submit_btn = gr.Button("Generate Video")
-
-    with gr.Row():
         seed_input = gr.Number(label="Seed", value=0xC0FFEE)
     output_video = gr.Video(label="Generated Video")
 
