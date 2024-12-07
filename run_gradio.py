@@ -15,6 +15,9 @@ MAX_VIDEO_SEC = 20
 DEFAULT_VIDEO_SEC = 5
 
 args = parse_args()
+args.prompt = None
+args.flow_reverse = True
+args.use_cpu_offload = True
 print(args)
 models_root_path = Path(args.model_base)
 if not models_root_path.exists():
@@ -37,6 +40,11 @@ args = hunyuan_video_sampler.args
 
 
 def generate_video(prompt, video_length, size, infer_steps) -> str:
+    print(f"Prompt: {prompt}")
+    print(f"Video Length: {video_length}")
+    print(f"Size: {size}")
+    print(f"Inference Steps: {infer_steps}")
+
     width, height = map(int, size.split("x"))
     outputs = hunyuan_video_sampler.predict(
         prompt=prompt,
