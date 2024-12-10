@@ -134,14 +134,14 @@ with gr.Blocks() as demo:
         prompt_input = gr.Textbox(
             label="Prompt",
             placeholder="Type something...",
-            lines=3,
-            max_lines=10,
+            lines=5,
+            max_lines=20,
         )
         neg_prompt_input = gr.Textbox(
             label="Negative prompt",
             placeholder="Type something...",
-            lines=3,
-            max_lines=10,
+            lines=5,
+            max_lines=20,
             value="aerial view, overexposed, low quality, deformation, a poor composition, bad hands, bad teeth, bad eyes, bad limbs, distortion",
         )
     with gr.Row():
